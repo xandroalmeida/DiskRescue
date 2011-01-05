@@ -21,7 +21,7 @@ void MainWindow::on_actionRecover_triggered()
 {
     qDebug() << "on_actionRecover_triggered";
     if (!recoverThread) {
-       recoverThread = new RecoverThread();
+        recoverThread = new RecoverThread();
         connect(recoverThread, SIGNAL(finished()), this, SLOT(on_recoverThread_finished()));
         recoverThread->start();
     }
