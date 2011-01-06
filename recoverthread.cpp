@@ -14,8 +14,13 @@ RecoverThread::RecoverThread(QString const &outputDir, QString const &diskName):
 
 void RecoverThread::run() {
 
-    QProcess proc;
+#ifndef QT_NO_DEBUG
     QString prg = "C:\\Projetos\\sonitIT\\DiskRescue-build-desktop\\debug\\ddrescue.exe";
+#else
+
+#endif
+
+    QProcess proc;
     QStringList args = QStringList() << "-n" << "-b2048" << "/dev/sr0" << m_outputDir + "\\" + m_diskName + ".iso" << m_outputDir + "\\" + m_diskName + ".log";
     qDebug() << " RecoverThread::run";
 
