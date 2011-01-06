@@ -4,6 +4,8 @@
 #include <QProcess>
 #include <QRegExp>
 #include <QDebug>
+#include <QSettings>
+#include <QtGui/QApplication>
 
 RecoverThread::RecoverThread(QString const &outputDir, QString const &diskName):
         m_abort(false)
@@ -16,7 +18,9 @@ void RecoverThread::run() {
 
 #ifndef QT_NO_DEBUG
     QString prg = "C:\\Projetos\\sonitIT\\DiskRescue-build-desktop\\debug\\ddrescue.exe";
+    ;
 #else
+    QSettings settings("HKEY_CURRENT_USER\\Software\\" + QApplication::organizationName() + "\\" + QApplication::applicationName(), QSettings::NativeFormat);
 
 #endif
 
