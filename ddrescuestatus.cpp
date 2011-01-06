@@ -3,9 +3,9 @@
 #include <QRegExp>
 #include <QDebug>
 
-static long calcByteQuantity(QString const & value, QString const & unit)
+static long long calcByteQuantity(QString const & value, QString const & unit)
 {
-    long lValue = value.toLong();
+    long long lValue = value.toLongLong();
     if (unit == "B") {
         return lValue;
     } else if (unit == "kB") {
@@ -25,7 +25,7 @@ static long calcByteQuantity(QString const & value, QString const & unit)
     return -1;
 }
 
-static long calcByteRate(QString const & value, QString const & unit)
+static long long calcByteRate(QString const & value, QString const & unit)
 {
     QString u = unit;
     return calcByteQuantity(value, u.remove("/s"));
@@ -103,12 +103,12 @@ bool DdrescueStatus::parseOk() const
     return m_parseOk;
 }
 
-long DdrescueStatus::rescued() const
+long long DdrescueStatus::rescued() const
 {
     return m_rescued;
 }
 
-long DdrescueStatus::errsize() const
+long long DdrescueStatus::errsize() const
 {
     return m_errsize;
 }
@@ -118,7 +118,7 @@ long DdrescueStatus::currentRate() const
     return m_currentRate;
 }
 
-long DdrescueStatus::ipos() const
+long long DdrescueStatus::ipos() const
 {
     return m_ipos;
 }
@@ -133,7 +133,7 @@ long DdrescueStatus::averageRate() const
     return m_averageRate;
 }
 
-long DdrescueStatus::opos() const
+long long DdrescueStatus::opos() const
 {
     return m_opos;
 }

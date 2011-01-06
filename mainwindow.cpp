@@ -47,13 +47,13 @@ static QString TvInfo(QString const & tdrive)
     return vName;
 }
 
-static QString formatBytes(long value)
+static QString formatBytes(long long value)
 {
-    if (value > 10e9)
+    if (value > 2*1e9)
         return QString::number(value/1e9) + " GB";
-    if (value > 10e6)
+    if (value > 2*1e6)
         return QString::number(value/1e6) + " MB";
-    if (value > 10e3)
+    if (value > 2*1e3)
         return QString::number(value/1e3) + " kB";
 
     return QString::number(value) + " B";
@@ -135,30 +135,31 @@ void MainWindow::on_recoverThread_updateStatus(const DdrescueStatus &status,  Dd
         scene = new QGraphicsScene();
         ui->graph->setScene(scene);
     }
-
     scene->clear();
     qreal width = ui->graph->width()-5;
     qreal height = ui->graph->height()-5;
     scene->addRect(0,0,width,height,QPen(QColor(Qt::blue)), QBrush(QColor(Qt::blue)));
 
-    long sizeTotal = 0;
+    long long sizeTotal = 0;
     for (int i = 0; i < log.blocks().size(); i++) {
         sizeTotal += log.blocks().at(i).size;
     }
     qreal wfactor = sizeTotal / width;
 
-    for (int i = 0; i < log.blocks().size(); i++) {
-        qreal x = log.blocks().at(i).pos/wfactor;
-        qreal w = log.blocks().at(i).size/wfactor;
-       scene->addRect(x,0
-                      ,w,height
-                      ,QPen(statusBlock2QColor(log.blocks().at(i).status))
-                      , QBrush(statusBlock2QColor(log.blocks().at(i).status)));
+
+    if (sizeTotal > 0) {
+       for (int i = 0; i < log.blocks().size(); i++) {
+           qreal x = log.blocks().at(i).pos/wfactor;
+           qreal w = log.blocks().at(i).size/wfactor;
+
+            scene->addRect(x,0
+                         ,w,height
+                         ,QPen(statusBlock2QColor(log.blocks().at(i).status))
+                         , QBrush(statusBlock2QColor(log.blocks().at(i).status)));
+        }
     }
 
-
     scene->addText(formatBytes(sizeTotal));
-
 }
 
 void MainWindow::on_btnSelectOutputDirectory_clicked()

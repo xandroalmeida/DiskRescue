@@ -17,7 +17,7 @@ RecoverThread::RecoverThread(QString const &outputDir, QString const &diskName):
 void RecoverThread::run() {
 
 #ifndef QT_NO_DEBUG
-    QString prg = "C:\\Projetos\\sonitIT\\DiskRescue-build-desktop\\debug\\ddrescue.exe";
+    QString prg = "C:\\Projetos\\sonitIT\\DiskRescue\\installer\\ddrescue.exe";
     ;
 #else
     QSettings settings("HKEY_CURRENT_USER\\Software\\" + QApplication::organizationName() + "\\" + QApplication::applicationName(), QSettings::NativeFormat);

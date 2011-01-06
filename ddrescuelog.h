@@ -10,8 +10,8 @@ class DdrescueLog
 {
     class BlockInfo{
     public:
-        long pos;
-        long size;
+        long long pos;
+        long long size;
         QChar status;
     };
 
@@ -24,7 +24,7 @@ public:
     DdrescueLog();
     bool load(QString const & fileName);
 
-    long currentPos() const;
+    long long currentPos() const;
     QChar currentStatus() const;
     QList<BlockInfo> blocks() const;
 
