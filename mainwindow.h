@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "ddrescuestatus.h"
+#include "ddrescuelog.h"
 #include <QMainWindow>
 
 namespace Ui {
@@ -16,12 +18,18 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow *ui;    
+    void checkGuiStatus();
 
 private slots:
+    void on_cbCdDriver_currentIndexChanged(QString const &);
+    void on_btnSelectOutputDirectory_clicked();
     void on_actionAbort_triggered();
     void on_actionRecover_triggered();
     void on_recoverThread_finished();
+
+    void on_recoverThread_updateStatus(DdrescueStatus const & status, DdrescueLog const &log);
+
 };
 
 #endif // MAINWINDOW_H

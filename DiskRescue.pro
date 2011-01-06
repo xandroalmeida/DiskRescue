@@ -12,9 +12,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    recoverthread.cpp
+    recoverthread.cpp \
+    ddrescuestatus.cpp \
+    ddrescuelog.cpp
 
 HEADERS  += mainwindow.h \
-    recoverthread.h
+    recoverthread.h \
+    ddrescuestatus.h \
+    ddrescuelog.h
 
 FORMS    += mainwindow.ui
