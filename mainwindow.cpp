@@ -8,7 +8,29 @@
 #include <qt_windows.h>
 
 static RecoverThread* recoverThread = NULL;
-QString TvInfo(QString const & tdrive)
+
+static QColor statusBlock2QColor(QChar status) {
+    if (status == '?')     //non-tried block
+        return QColor(Qt::gray);
+
+    if (status == '*')     //failed block non-trimmed
+        return QColor(Qt::yellow);
+
+    if (status == '/')     //failed block non-split
+        return QColor(Qt::magenta);
+
+    if (status == '-')     //failed block bad-sector(s)
+        return QColor(Qt::red);
+
+    if (status == '+')     //finished block
+        return QColor(Qt::green);
+
+    return QColor(Qt::cyan);
+
+}
+
+
+static QString TvInfo(QString const & tdrive)
 {
     WCHAR szVolumeName[256] ;
     WCHAR szFileSystemName[256];
@@ -117,8 +139,25 @@ void MainWindow::on_recoverThread_updateStatus(const DdrescueStatus &status,  Dd
     scene->clear();
     qreal width = ui->graph->width()-5;
     qreal height = ui->graph->height()-5;
-    qDebug() << "width" << width;
     scene->addRect(0,0,width,height,QPen(QColor(Qt::blue)), QBrush(QColor(Qt::blue)));
+
+    long sizeTotal = 0;
+    for (int i = 0; i < log.blocks().size(); i++) {
+        sizeTotal += log.blocks().at(i).size;
+    }
+    qreal wfactor = sizeTotal / width;
+
+    for (int i = 0; i < log.blocks().size(); i++) {
+        qreal x = log.blocks().at(i).pos/wfactor;
+        qreal w = log.blocks().at(i).size/wfactor;
+       scene->addRect(x,0
+                      ,w,height
+                      ,QPen(statusBlock2QColor(log.blocks().at(i).status))
+                      , QBrush(statusBlock2QColor(log.blocks().at(i).status)));
+    }
+
+
+    scene->addText(formatBytes(sizeTotal));
 
 }
 

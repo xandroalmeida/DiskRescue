@@ -54,3 +54,6 @@ QChar DdrescueLog::currentStatus() const
 {
     return m_currentStatus;
 }
+QList<DdrescueLog::BlockInfo> DdrescueLog::blocks() const {
+    return m_blocks;
+}

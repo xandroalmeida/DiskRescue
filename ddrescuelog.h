@@ -26,6 +26,8 @@ public:
 
     long currentPos() const;
     QChar currentStatus() const;
+    QList<BlockInfo> blocks() const;
+
 };
 
 Q_DECLARE_METATYPE(DdrescueLog)
