@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QGraphicsScene>
 #include <qt_windows.h>
+#include <QMessageBox>
 
 static RecoverThread* recoverThread = NULL;
 
@@ -61,7 +62,8 @@ static QString formatBytes(long long value)
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_closeOnFinished(false)
 { 
     ui->setupUi(this);
     ui->txtOutputDirectory->setText(QSettings().value("outputDirectory").value<QString>());
@@ -78,7 +80,7 @@ void MainWindow::on_actionRecover_triggered()
 {
     qDebug() << "on_actionRecover_triggered";
     if (!recoverThread) {
-        recoverThread = new RecoverThread(ui->txtOutputDirectory->text(), ui->lblVolumeName->text());
+        recoverThread = new RecoverThread(ui->txtOutputDirectory->text(), ui->lblVolumeName->text(), ui->chbAggressive->isChecked());
         connect(recoverThread, SIGNAL(finished()), this, SLOT(on_recoverThread_finished()));
         connect(recoverThread, SIGNAL(updateStatus(DdrescueStatus, DdrescueLog)), this, SLOT(on_recoverThread_updateStatus(DdrescueStatus, DdrescueLog)));
 
@@ -96,7 +98,11 @@ void MainWindow::on_recoverThread_finished(){
     recoverThread->disconnect();
     delete recoverThread;
     recoverThread = NULL;
-    checkGuiStatus();
+    if (m_closeOnFinished) {
+        close();
+    } else {
+        checkGuiStatus();
+    }
 }
 
 void MainWindow::checkGuiStatus()
@@ -106,11 +112,13 @@ void MainWindow::checkGuiStatus()
         ui->actionRecover->setEnabled(false);
         ui->actionAbort->setEnabled(true);
         ui->cbCdDriver->setEnabled(false);
+        ui->chbAggressive->setEnabled(false);
     } else {
         ui->btnSelectOutputDirectory->setEnabled(true);
         ui->actionRecover->setEnabled(ui->lblVolumeName->text().size() > 0);
         ui->actionAbort->setEnabled(false);
         ui->cbCdDriver->setEnabled(true);
+        ui->chbAggressive->setEnabled(true);
     }
 }
 
@@ -179,4 +187,27 @@ void MainWindow::on_cbCdDriver_currentIndexChanged(QString const &driverName)
 {
     ui->lblVolumeName->setText(TvInfo(driverName));
     checkGuiStatus();
+}
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    if (recoverThread) {
+        int ret = QMessageBox::warning(this, tr("DiskRescue"),
+                                       tr("There is a recovery process running. Want stop it?"),
+                                       QMessageBox::Yes | QMessageBox::No);
+        switch(ret) {
+            case QMessageBox::Yes:
+                recoverThread->abort();
+                m_closeOnFinished = true;
+                break;
+            case QMessageBox::No:
+                break;
+            default:
+                qDebug() << "QMessageBox::Default";
+                break;
+            }
+        event->ignore();
+    } else {
+        event->accept();
+    }
 }

@@ -20,6 +20,9 @@ public:
 private:
     Ui::MainWindow *ui;    
     void checkGuiStatus();
+    bool m_closeOnFinished;
+protected:
+    virtual void closeEvent(QCloseEvent *);
 
 private slots:
     void on_cbCdDriver_currentIndexChanged(QString const &);

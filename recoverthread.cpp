@@ -7,11 +7,12 @@
 #include <QSettings>
 #include <QtGui/QApplication>
 
-RecoverThread::RecoverThread(QString const &outputDir, QString const &diskName):
+RecoverThread::RecoverThread(QString const &outputDir, QString const &diskName, bool aggressive):
         m_abort(false)
 {
     m_outputDir = outputDir;
     m_diskName = diskName;
+    m_aggressive = aggressive;
 }
 
 void RecoverThread::run() {
@@ -25,7 +26,15 @@ void RecoverThread::run() {
 #endif
 
     QProcess proc;
-    QStringList args = QStringList() << "-n" << "-b2048" << "/dev/sr0" << m_outputDir + "\\" + m_diskName + ".iso" << m_outputDir + "\\" + m_diskName + ".log";
+    QStringList args = QStringList();
+    if (m_aggressive) {
+        args << "-d";
+    } else {
+        args << "-n";
+    }
+
+    args << "-b2048" << "/dev/sr0" << m_outputDir + "\\" + m_diskName + ".iso" << m_outputDir + "\\" + m_diskName + ".log";
+
     qDebug() << " RecoverThread::run";
 
     proc.start(prg, args, QProcess::ReadOnly);

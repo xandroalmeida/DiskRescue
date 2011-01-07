@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
     qRegisterMetaType<DdrescueLog>();
 
     MainWindow w;
+
     w.show();
 
     return a.exec();

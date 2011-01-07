@@ -5,6 +5,7 @@
 #include "ddrescuelog.h"
 
 #include <QThread>
+#include <QDateTime>
 
 class RecoverThread : public QThread
 {
@@ -13,9 +14,12 @@ private:
     bool m_abort;
     QString m_outputDir;
     QString m_diskName;
+    bool m_aggressive;
+    QDateTime m_dtStart;
 public:
-    RecoverThread(QString const &outputDir, QString const &diskName);
+    RecoverThread(QString const &outputDir, QString const &diskName, bool aggressive);
     virtual void run();
+    QDateTime dtStart() const {return m_dtStart;};
 
 public slots:
     void abort();
