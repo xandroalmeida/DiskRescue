@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>400</height>
+    <height>616</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -31,28 +31,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="cbCdDriver">
-        <item>
-         <property name="text">
-          <string/>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>d:</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>e:</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>f:</string>
-         </property>
-        </item>
-       </widget>
+       <widget class="QComboBox" name="cbDriver"/>
       </item>
       <item>
        <widget class="QLabel" name="label">

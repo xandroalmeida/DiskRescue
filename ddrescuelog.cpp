@@ -42,7 +42,7 @@ bool DdrescueLog::load(QString const & fileName)
         qDebug() << "Erro ao abrir " << fileName;
     }
 
-
+    return true;
 }
 
 long long DdrescueLog::currentPos() const

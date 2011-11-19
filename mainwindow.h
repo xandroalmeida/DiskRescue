@@ -25,7 +25,7 @@ protected:
     virtual void closeEvent(QCloseEvent *);
 
 private slots:
-    void on_cbCdDriver_currentIndexChanged(QString const &);
+    void on_cbDriver_currentIndexChanged(QString const &);
     void on_btnSelectOutputDirectory_clicked();
     void on_actionAbort_triggered();
     void on_actionRecover_triggered();

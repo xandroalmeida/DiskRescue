@@ -1,12 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "recoverthread.h"
+#include "filesysteminfo.h"
 #include <QDebug>
 #include <QSettings>
 #include <QFileDialog>
 #include <QGraphicsScene>
 #include <qt_windows.h>
 #include <QMessageBox>
+#include <QVariant>
 
 static RecoverThread* recoverThread = NULL;
 
@@ -30,24 +32,6 @@ static QColor statusBlock2QColor(QChar status) {
 
 }
 
-
-static QString TvInfo(QString const & tdrive)
-{
-    WCHAR szVolumeName[256] ;
-    WCHAR szFileSystemName[256];
-    DWORD dwSerialNumber = 0;
-    DWORD dwMaxFileNameLength=256;
-    DWORD dwFileSystemFlags=0;
-
-    bool ret = GetVolumeInformation( (WCHAR *) tdrive.utf16(),szVolumeName,256,&dwSerialNumber,&dwMaxFileNameLength,&dwFileSystemFlags,szFileSystemName,256);
-    if(!ret)
-        return QString("");
-
-    QString vName=QString::fromUtf16 ( (const ushort *) szVolumeName) ;
-    vName.trimmed();
-    return vName;
-}
-
 static QString formatBytes(long long value)
 {
     if (value > 2*1e9)
@@ -64,9 +48,18 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_closeOnFinished(false)
-{ 
+{
     ui->setupUi(this);
     ui->txtOutputDirectory->setText(QSettings().value("outputDirectory").value<QString>());
+
+    QList<FileSystemInfo> drvs = FileSystemInfo::getFilesSystemList();
+    this->ui->cbDriver->addItem("", NULL);
+    for (int i = 0; i < drvs.size(); i++) {
+        QVariant data;
+        FileSystemInfo fsi = drvs.at(i);
+        data.setValue(fsi);
+        this->ui->cbDriver->addItem(fsi.getDevname(), data);
+    }
 
     checkGuiStatus();
 }
@@ -111,13 +104,13 @@ void MainWindow::checkGuiStatus()
         ui->btnSelectOutputDirectory->setEnabled(false);
         ui->actionRecover->setEnabled(false);
         ui->actionAbort->setEnabled(true);
-        ui->cbCdDriver->setEnabled(false);
+        ui->cbDriver->setEnabled(false);
         ui->chbAggressive->setEnabled(false);
     } else {
         ui->btnSelectOutputDirectory->setEnabled(true);
         ui->actionRecover->setEnabled(ui->lblVolumeName->text().size() > 0);
         ui->actionAbort->setEnabled(false);
-        ui->cbCdDriver->setEnabled(true);
+        ui->cbDriver->setEnabled(true);
         ui->chbAggressive->setEnabled(true);
     }
 }
@@ -183,9 +176,10 @@ void MainWindow::on_btnSelectOutputDirectory_clicked()
     }
 }
 
-void MainWindow::on_cbCdDriver_currentIndexChanged(QString const &driverName)
+void MainWindow::on_cbDriver_currentIndexChanged(QString const &driverName)
 {
-    ui->lblVolumeName->setText(TvInfo(driverName));
+    FileSystemInfo fsi = this->ui->cbDriver->itemData(this->ui->cbDriver->currentIndex()).value<FileSystemInfo>();
+    this->ui->lblVolumeName->setText("" + fsi.getVolname() + " - " + fsi.getFsname());
     checkGuiStatus();
 }
 

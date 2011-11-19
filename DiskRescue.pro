@@ -14,11 +14,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     recoverthread.cpp \
     ddrescuestatus.cpp \
-    ddrescuelog.cpp
+    ddrescuelog.cpp \
+    filesysteminfo.cpp
 
 HEADERS  += mainwindow.h \
     recoverthread.h \
     ddrescuestatus.h \
-    ddrescuelog.h
+    ddrescuelog.h \
+    filesysteminfo.h
 
 FORMS    += mainwindow.ui
+
+
